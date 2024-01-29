@@ -1,3 +1,5 @@
+using DocumentManager.Domain;
+
 namespace DocumentManager.Tests
 {
     [TestFixture]
@@ -8,16 +10,66 @@ namespace DocumentManager.Tests
         {
         }
 
+        
         [Test]
-        public void Test1()
+        public void AddingItemShouldIncreaseQueueCountBy1()
         {
-            Assert.Pass();
+            Document_Manager dm = new();
+
+            int queueCountBefore = dm.CountItemsInQueue();
+
+            DocumentItem item = new DocumentItem();
+
+            dm.AddDocument(item);
+
+            int queueCountAfter = dm.CountItemsInQueue();
+
+            Assert.That(queueCountAfter, Is.EqualTo(queueCountBefore + 1));
+
+
         }
 
         [Test]
-        public void Test2()
+        public void RemovingItemShouldDecreaseQueueCountBy1()
         {
-            Assert.Fail();
+            Document_Manager dm = new();
+
+            DocumentItem item = new DocumentItem();
+
+            dm.AddDocument(item);
+            int queueCountBefore = dm.CountItemsInQueue();
+
+            dm.ProcessAndRemoveDocumentInQueue();
+
+            int queueCountAfter = dm.CountItemsInQueue();
+
+            Assert.That(queueCountAfter, Is.EqualTo(queueCountBefore - 1));
+
+
+        }
+
+        [Test]
+        public void IsDocumentAvailableShouldReturnFalseWhenQueueIsEmpty()
+        {
+            Document_Manager dm = new();
+
+            Assert.False(dm.IsDocumentAvailable());
+
+
+        }
+
+        [Test]
+        public void IsDocumentAvailableShouldReturnTrueWhenQueueIsNotEmpty()
+        {
+            Document_Manager dm = new();
+
+            DocumentItem item = new DocumentItem();
+
+            dm.AddDocument(item);
+
+            Assert.True(dm.IsDocumentAvailable());
+
+
         }
     }
 }
